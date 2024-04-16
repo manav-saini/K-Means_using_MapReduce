@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package mapreduce;
+
+// Defines a point in space.
+message Point {
+  float x = 1;
+  float y = 2;
+}
+
+// Defines a centroid which includes an ID and its location.
+message Centroid {
+  int32 id = 1;
+  Point location = 2;
+}
+
+// Assignment of a point to a centroid.
+message CentroidAssignment {
+  int32 centroidId = 1;
+  Point point = 2;
+}
+
+// Request sent by Master to Mapper for processing data.
+message MapRequest {
+  repeated Point data = 1;
+  repeated Centroid centroids = 2;
+}
+
+// Response from Mapper to Master containing centroid assignments.
+message MapResponse {
+  repeated CentroidAssignment assignments = 1;
+}
+
+// Request from Reducer to Mapper to fetch data for reduction.
+message FetchDataRequest {
+  int32 reducerId = 1;
+}
+
+// Response from Mapper to Reducer containing data necessary for reduction.
+message FetchDataResponse {
+  repeated CentroidAssignment assignments = 1;
+}
+
+// Request from Master to Reducer to perform reduction.
+message ReduceRequest {
+  int32 reducerId = 1;
+}
+
+// Response from Reducer to Master containing updated centroids.
+message ReduceResponse {
+  repeated Centroid centroids = 1;
+}
+
+// Service definition for MapReduce operations.
+service MapReduceService {
+  rpc Map(MapRequest) returns (MapResponse);
+  rpc FetchData(FetchDataRequest) returns (FetchDataResponse);
+  rpc Reduce(ReduceRequest) returns (ReduceResponse);
+}
