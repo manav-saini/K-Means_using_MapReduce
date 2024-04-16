@@ -1,0 +1,86 @@
+2024-04-17 00:33:05,644 - INFO - Initial centroids: [(1.376478335100881, -8.010722695141594), (-8.410254651701504, 0.7440001087711536)]
+2024-04-17 00:33:05,650 - INFO - Iteration 1: Mapper 1 simulated failure
+2024-04-17 00:33:05,656 - INFO - Iteration 1: Mapper 2 response: SUCCESS
+2024-04-17 00:33:07,651 - ERROR - Iteration 1: Mapper 1 retrying
+2024-04-17 00:33:07,652 - INFO - Iteration 1: Mapper 1 simulated failure
+2024-04-17 00:33:09,658 - ERROR - Iteration 1: Mapper 1 retrying
+2024-04-17 00:33:09,658 - INFO - Iteration 1: Mapper 1 simulated failure
+2024-04-17 00:33:11,660 - ERROR - Iteration 1: Mapper 1 retrying
+2024-04-17 00:33:11,661 - INFO - Iteration 1: Mapper 1 simulated failure
+2024-04-17 00:33:13,667 - ERROR - Iteration 1: Mapper 1 retrying
+2024-04-17 00:33:13,672 - INFO - Iteration 1: Mapper 1 response: SUCCESS
+2024-04-17 00:33:13,674 - INFO - Iteration 1: Reducer 2 simulated failure
+2024-04-17 00:33:13,692 - INFO - Iteration 1: Reducer 1 response: SUCCESS
+2024-04-17 00:33:14,679 - ERROR - Iteration 1: Reducer 2 retrying
+2024-04-17 00:33:14,691 - INFO - Iteration 1: Reducer 2 response: SUCCESS
+2024-04-17 00:33:14,691 - INFO - Iteration 1: New centroids: [[ 0.07280575 -4.57223272]
+ [-5.5493722  -0.40214381]]
+2024-04-17 00:33:14,693 - INFO - Iteration 2: Mapper 2 simulated failure
+2024-04-17 00:33:14,695 - INFO - Iteration 2: Mapper 1 response: SUCCESS
+2024-04-17 00:33:16,699 - ERROR - Iteration 2: Mapper 2 retrying
+2024-04-17 00:33:16,699 - INFO - Iteration 2: Mapper 2 simulated failure
+2024-04-17 00:33:18,703 - ERROR - Iteration 2: Mapper 2 retrying
+2024-04-17 00:33:18,706 - INFO - Iteration 2: Mapper 2 response: SUCCESS
+2024-04-17 00:33:18,715 - INFO - Iteration 2: Reducer 2 response: SUCCESS
+2024-04-17 00:33:18,717 - INFO - Iteration 2: Reducer 1 response: SUCCESS
+2024-04-17 00:33:18,717 - INFO - Iteration 2: New centroids: [[-5.5493722  -0.40214381]
+ [ 0.07280575 -4.57223272]]
+2024-04-17 00:33:18,721 - INFO - Iteration 3: Mapper 1 response: SUCCESS
+2024-04-17 00:33:18,721 - INFO - Iteration 3: Mapper 2 response: SUCCESS
+2024-04-17 00:33:18,723 - INFO - Iteration 3: Reducer 2 simulated failure
+2024-04-17 00:33:18,726 - INFO - Iteration 3: Reducer 1 response: SUCCESS
+2024-04-17 00:33:19,728 - ERROR - Iteration 3: Reducer 2 retrying
+2024-04-17 00:33:19,729 - INFO - Iteration 3: Reducer 2 simulated failure
+2024-04-17 00:33:20,735 - ERROR - Iteration 3: Reducer 2 retrying
+2024-04-17 00:33:20,735 - INFO - Iteration 3: Reducer 2 simulated failure
+2024-04-17 00:33:21,741 - ERROR - Iteration 3: Reducer 2 retrying
+2024-04-17 00:33:21,747 - INFO - Iteration 3: Reducer 2 response: SUCCESS
+2024-04-17 00:33:21,748 - INFO - Iteration 3: New centroids: [[ 0.07280575 -4.57223272]
+ [-5.5493722  -0.40214381]]
+2024-04-17 00:33:21,749 - INFO - Iteration 4: Mapper 2 simulated failure
+2024-04-17 00:33:21,752 - INFO - Iteration 4: Mapper 1 response: SUCCESS
+2024-04-17 00:33:23,755 - ERROR - Iteration 4: Mapper 2 retrying
+2024-04-17 00:33:23,756 - INFO - Iteration 4: Mapper 2 simulated failure
+2024-04-17 00:33:25,761 - ERROR - Iteration 4: Mapper 2 retrying
+2024-04-17 00:33:25,762 - INFO - Iteration 4: Mapper 2 simulated failure
+2024-04-17 00:33:27,767 - ERROR - Iteration 4: Mapper 2 retrying
+2024-04-17 00:33:27,770 - INFO - Iteration 4: Mapper 2 response: SUCCESS
+2024-04-17 00:33:27,779 - INFO - Iteration 4: Reducer 2 response: SUCCESS
+2024-04-17 00:33:27,780 - INFO - Iteration 4: Reducer 1 response: SUCCESS
+2024-04-17 00:33:27,781 - INFO - Iteration 4: New centroids: [[-5.5493722  -0.40214381]
+ [ 0.07280575 -4.57223272]]
+2024-04-17 00:33:27,782 - INFO - Iteration 5: Mapper 1 simulated failure
+2024-04-17 00:33:27,784 - INFO - Iteration 5: Mapper 2 response: SUCCESS
+2024-04-17 00:33:29,783 - ERROR - Iteration 5: Mapper 1 retrying
+2024-04-17 00:33:29,784 - INFO - Iteration 5: Mapper 1 simulated failure
+2024-04-17 00:33:31,790 - ERROR - Iteration 5: Mapper 1 retrying
+2024-04-17 00:33:31,791 - INFO - Iteration 5: Mapper 1 simulated failure
+2024-04-17 00:33:33,796 - ERROR - Iteration 5: Mapper 1 retrying
+2024-04-17 00:33:33,797 - INFO - Iteration 5: Mapper 1 simulated failure
+2024-04-17 00:33:35,803 - ERROR - Iteration 5: Mapper 1 retrying
+2024-04-17 00:33:35,806 - INFO - Iteration 5: Mapper 1 response: SUCCESS
+2024-04-17 00:33:35,815 - INFO - Iteration 5: Reducer 1 response: SUCCESS
+2024-04-17 00:33:35,815 - INFO - Iteration 5: Reducer 2 response: SUCCESS
+2024-04-17 00:33:35,816 - INFO - Iteration 5: New centroids: [[ 0.07280575 -4.57223272]
+ [-5.5493722  -0.40214381]]
+2024-04-17 00:33:35,817 - INFO - Iteration 6: Mapper 1 simulated failure
+2024-04-17 00:33:35,818 - INFO - Iteration 6: Mapper 2 simulated failure
+2024-04-17 00:33:37,819 - ERROR - Iteration 6: Mapper 1 retrying
+2024-04-17 00:33:37,820 - INFO - Iteration 6: Mapper 1 simulated failure
+2024-04-17 00:33:37,820 - ERROR - Iteration 6: Mapper 2 retrying
+2024-04-17 00:33:37,822 - INFO - Iteration 6: Mapper 2 response: SUCCESS
+2024-04-17 00:33:39,825 - ERROR - Iteration 6: Mapper 1 retrying
+2024-04-17 00:33:39,828 - INFO - Iteration 6: Mapper 1 response: SUCCESS
+2024-04-17 00:33:39,830 - INFO - Iteration 6: Reducer 2 simulated failure
+2024-04-17 00:33:39,834 - INFO - Iteration 6: Reducer 1 response: SUCCESS
+2024-04-17 00:33:40,835 - ERROR - Iteration 6: Reducer 2 retrying
+2024-04-17 00:33:40,836 - INFO - Iteration 6: Reducer 2 simulated failure
+2024-04-17 00:33:41,838 - ERROR - Iteration 6: Reducer 2 retrying
+2024-04-17 00:33:41,839 - INFO - Iteration 6: Reducer 2 simulated failure
+2024-04-17 00:33:42,844 - ERROR - Iteration 6: Reducer 2 retrying
+2024-04-17 00:33:42,850 - INFO - Iteration 6: Reducer 2 response: SUCCESS
+2024-04-17 00:33:42,851 - INFO - Iteration 6: New centroids: [[ 0.07280575 -4.57223272]
+ [-5.5493722  -0.40214381]]
+2024-04-17 00:33:42,851 - INFO - Convergence reached after 6 iterations.
+2024-04-17 00:33:42,851 - INFO - Final centroids: [[ 0.07280575 -4.57223272]
+ [-5.5493722  -0.40214381]]
