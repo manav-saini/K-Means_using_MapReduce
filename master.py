@@ -5,6 +5,7 @@ import numpy as np
 import random
 import mapreduce_pb2
 import mapreduce_pb2_grpc
+import concurrent.futures
 
 class MasterServicer(mapreduce_pb2_grpc.MapReduceServiceServicer):
     def __init__(self, num_mappers, num_reducers, data_source, num_centroids, iterations, scenario,base_port=5000):
@@ -42,29 +43,44 @@ class MasterServicer(mapreduce_pb2_grpc.MapReduceServiceServicer):
             chunks = np.array_split(data_points, self.num_mappers)
         mapped = []
         reduced = []
-        channel = grpc.insecure_channel('localhost:50051')
-        mapper_stub = mapreduce_pb2_grpc.MapReduceServiceStub(channel)
-
-        for chunk in chunks:
+        def map_chunk(chunk, mapper_id):
+            port = self.base_port + mapper_id
+            channel = grpc.insecure_channel(f'localhost:{port}')
+            mapper_stub = mapreduce_pb2_grpc.MapReduceServiceStub(channel)
             point_messages = [mapreduce_pb2.Point(x=point[0], y=point[1]) for point in chunk]
             centroid_messages = [mapreduce_pb2.Centroid(id=i, location=mapreduce_pb2.Point(x=centroid[0], y=centroid[1])) for i, centroid in enumerate(self.centroids)]
             try:
                 response = mapper_stub.Map(mapreduce_pb2.MapRequest(data=point_messages, centroids=centroid_messages))
-                mapped.extend(response.assignments)
+                return response.assignments
             except grpc.RpcError as e:
-                print(f"Error: {str(e)} - Retrying...")
-                continue
+                print(f"Error communicating with mapper {mapper_id} on port {port}: {str(e)}")
+                return []
+            
+        with concurrent.futures.ThreadPoolExecutor(max_workers=self.num_mappers) as executor:
+            future_to_chunk = {executor.submit(map_chunk, chunk, i+1): chunk for i, chunk in enumerate(chunks)}
+            for future in concurrent.futures.as_completed(future_to_chunk):
+                chunk_result = future.result()
+                mapped.extend(chunk_result)
 
         assignments = np.array_split(mapped, self.num_reducers)
-        channel = grpc.insecure_channel('localhost:50052')
-        reducer_stub = mapreduce_pb2_grpc.MapReduceServiceStub(channel)
-        for i, assignment_group in enumerate(assignments):
+
+        print("mapping done")
+
+        def reducer_assignments(assignment_group, reducer_id):
+            channel = grpc.insecure_channel(f'localhost:{self.base_port+50+ reducer_id}')
+            reducer_stub = mapreduce_pb2_grpc.MapReduceServiceStub(channel)
             try:
-                response = reducer_stub.Reduce(mapreduce_pb2.ReduceRequest(reducerId=i))
-                reduced.extend(response.centroids)
+                response = reducer_stub.Reduce(mapreduce_pb2.ReduceRequest(reducerId=reducer_id))
+                return response.centroids
             except grpc.RpcError as e:
-                print(f"Error: {str(e)} - Retrying...")
-                continue
+                print(f"Error communicating with reducer {reducer_id}: {str(e)}")
+                return []
+            
+        with concurrent.futures.ThreadPoolExecutor(max_workers=self.num_reducers) as executor:  
+            future_to_assignment_group = {executor.submit(reducer_assignments, assignment_group, i+1): assignment_group for i, assignment_group in enumerate(assignments)}
+            for future in concurrent.futures.as_completed(future_to_assignment_group):
+                assignment_group_result = future.result()
+                reduced.extend(assignment_group_result)
 
         return reduced
     def convert_new_centroids(self,protobuf_centroids):
@@ -80,6 +96,7 @@ class MasterServicer(mapreduce_pb2_grpc.MapReduceServiceServicer):
         for i in range(self.iterations):
             new_centroids = self.map_reduce_cycle()
             new_centroids = self.convert_new_centroids(new_centroids)
+            print(new_centroids)
             if np.allclose(old_centroids, new_centroids, atol=1e-4):
                 print("Convergence reached.")
                 break

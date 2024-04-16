@@ -20,11 +20,11 @@ def run_mappers(num_mappers, num_reducers):
             process.terminate()
             try:
                 output, error = process.communicate(timeout=10)
-                print(f"Mapper {i} terminated. Output:\n{output.decode()}")
+                print(f"Mapper {i+1} terminated. Output:\n{output.decode()}")
                 if error:
-                    print(f"Error from mapper {i}: {error.decode()}")
+                    print(f"Error from mapper {i+1}: {error.decode()}")
             except subprocess.TimeoutExpired:
-                print(f"Mapper {i} did not terminate gracefully and was killed.")
+                print(f"Mapper {i+1} did not terminate gracefully and was killed.")
                 process.kill()
 
 if __name__ == "__main__":
