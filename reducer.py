@@ -49,11 +49,12 @@ class ReducerServicer(mapreduce_pb2_grpc.MapReduceServiceServicer):
             )
             new_centroids.append(new_centroid)
             self.write_to_file(centroid_id, mean_point)
+        print(new_centroids)
 
         return mapreduce_pb2.ReduceResponse(centroids=new_centroids)
 
     def write_to_file(self, centroid_id, mean_point):
-        with open(os.path.join(self.output_dir, f'reducer_{centroid_id+1}_output.txt'), 'w') as file:
+        with open(os.path.join(self.output_dir, f'reducer_{self.reducer_id}_output.txt'), 'w') as file:
             file.write(f"Centroid ID: {centroid_id}, New Centroid: [{mean_point[0]}, {mean_point[1]}]\n")
 
 def serve():

@@ -14,6 +14,7 @@ class MapperServicer(mapreduce_pb2_grpc.MapReduceServiceServicer):
         self.reducer_count = reducer_count
         self.base_directory = base_directory
         self.output_dir = os.path.join(base_directory, f'M{mapper_id}')
+        self.data_file = "/Users/manavsaini/Documents/DSCD/Assignment 3/A3/points.txt"
         if not os.path.exists(self.output_dir):
             os.makedirs(self.output_dir)
         self.partition_files = [open(os.path.join(self.output_dir, f'partition_{i+1}.txt'), 'w') for i in range(reducer_count)]
@@ -31,12 +32,10 @@ class MapperServicer(mapreduce_pb2_grpc.MapReduceServiceServicer):
         #     return mapreduce_pb2.MapResponse()  # Returning an empty response to indicate failure
         self.partition_files = [open(os.path.join(self.output_dir, f'partition_{i+1}.txt'), 'w') for i in range(self.reducer_count)]
         try:
-            # Printing first data point and centroid location to check correct data types
-            print("First data point:", request.data[0])
-            print("First centroid location:", request.centroids[0].location)
-
+            data = np.loadtxt(self.data_file, delimiter=',')
+            subset = data[request.indices]
             # Converting Protobuf messages to Python tuples for easier manipulation
-            data_points = [(point.x, point.y) for point in request.data]
+            data_points = [(point[0], point[1]) for point in subset]
             centroids = [centroid for centroid in request.centroids]
             print(centroids)
 
@@ -67,7 +66,7 @@ class MapperServicer(mapreduce_pb2_grpc.MapReduceServiceServicer):
         return closest_centroid_id, closest_distance
 
     def write_to_partition(self, centroid_id, point):
-        reducer_index = centroid_id % self.reducer_count
+        reducer_index = centroid_id-1 % self.reducer_count
         with open(os.path.join(self.output_dir, f'partition_{reducer_index+1}.txt'), 'a') as file:
             file.write(f"{centroid_id},{point[0]},{point[1]}\n")
 
@@ -79,11 +78,11 @@ class MapperServicer(mapreduce_pb2_grpc.MapReduceServiceServicer):
         else:
             raise ValueError("Invalid input format")
 
-    def read_data_from_indices(self, indices):
-        file_path = os.path.join(self.base_directory, 'large_dataset.txt')
-        data = np.loadtxt(file_path)
-        selected_data = data[indices]
-        return selected_data
+    # def read_data_from_indices(self, indices):
+    #     file_path = os.path.join(self.base_directory, 'large_dataset.txt')
+    #     data = np.loadtxt(file_path)
+    #     selected_data = data[indices]
+    #     return selected_data
 
     def read_data_from_files(self, file_names):
         data = []
@@ -94,16 +93,17 @@ class MapperServicer(mapreduce_pb2_grpc.MapReduceServiceServicer):
     
     def FetchData(self, request, context):
         reducer_id = request.reducerId
-        data = self.read_data_from_files([f'M{self.mapper_id}/partition_{reducer_id}.txt'])
-        print(data)
-        assignments = []
-        print(data)
-        for parts in data:
-            assignments.append(mapreduce_pb2.CentroidAssignment(
-                centroidId=int(parts[0]),
-                point=mapreduce_pb2.Point(x=float(parts[1]), y=float(parts[2]))
-            ))
-        return mapreduce_pb2.FetchDataResponse(assignments=assignments)
+        try:
+            data = self.read_data_from_files([f'M{self.mapper_id}/partition_{reducer_id}.txt'])
+            assignments = []
+            for parts in data:
+                assignments.append(mapreduce_pb2.CentroidAssignment(
+                    centroidId=int(parts[0]),
+                    point=mapreduce_pb2.Point(x=float(parts[1]), y=float(parts[2]))
+                ))
+            return mapreduce_pb2.FetchDataResponse(assignments=assignments)
+        except:
+            return mapreduce_pb2.FetchDataResponse(assignments=[])
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

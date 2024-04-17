@@ -22,8 +22,8 @@ message CentroidAssignment {
 
 // Request sent by Master to Mapper for processing data.
 message MapRequest {
-  repeated Point data = 1;
-  repeated Centroid centroids = 2;
+  repeated int32 indices = 1;  // Indices of the data points the mapper should process
+  repeated Centroid centroids = 2;  // Centroids to be used for processing
 }
 
 // Response from Mapper to Master containing centroid assignments.

@@ -9,7 +9,6 @@ import concurrent.futures
 import logging
 import time
 
-# Set up logging
 logging.basicConfig(filename='dump.txt', filemode='w', format='%(asctime)s - %(levelname)s - %(message)s', level=logging.DEBUG)
 
 class MasterServicer(mapreduce_pb2_grpc.MapReduceServiceServicer):
@@ -57,16 +56,16 @@ class MasterServicer(mapreduce_pb2_grpc.MapReduceServiceServicer):
             channel = grpc.insecure_channel(f'localhost:{port}')
             mapper_stub = mapreduce_pb2_grpc.MapReduceServiceStub(channel)
             point_messages = [mapreduce_pb2.Point(x=point[0], y=point[1]) for point in chunk]
-            centroid_messages = [mapreduce_pb2.Centroid(id=i, location=mapreduce_pb2.Point(x=centroid[0], y=centroid[1])) for i, centroid in enumerate(self.centroids)]
+            centroid_messages = [mapreduce_pb2.Centroid(id=i+1, location=mapreduce_pb2.Point(x=centroid[0], y=centroid[1])) for i, centroid in enumerate(self.centroids)]
 
-            # Simulated probabilistic failure
+            #Simulated probabilistic failure
             if random.random() < 0.5:
                 print(f"Mapper {mapper_id} call FAILED due to simulated error")
                 logging.info(f"Iteration {iteration}: Mapper {mapper_id} simulated failure")
                 time.sleep(2)  # To allow time for potential manual interruption
                 return None  # Simulate failure
-
-            response = mapper_stub.Map(mapreduce_pb2.MapRequest(data=point_messages, centroids=centroid_messages))
+            
+            response = mapper_stub.Map(mapreduce_pb2.MapRequest(indices=indices[mapper_id-1], centroids=centroid_messages))
             print(f"Mapper {mapper_id} call SUCCESS")
             logging.info("Iteration %d: Mapper %d response: SUCCESS", iteration, mapper_id)
             return response.assignments
@@ -137,26 +136,25 @@ class MasterServicer(mapreduce_pb2_grpc.MapReduceServiceServicer):
         return np.array(new_centroids)
 
     def run(self):
-        old_centroids = np.array(self.centroids)
         for i in range(self.iterations):
             new_centroids = self.map_reduce_cycle(i+1)
             new_centroids = self.convert_new_centroids(new_centroids)
             print(f"Iteration {i+1}: New centroids: {new_centroids}")
             logging.info("Iteration %d: New centroids: %s", i+1, new_centroids)
-            if np.allclose(old_centroids, new_centroids, atol=1e-4):
+            if np.allclose(self.centroids, new_centroids, atol=1e-4):
                 print("Convergence reached.")
                 logging.info("Convergence reached after %d iterations.", i+1)
                 break
-            old_centroids = new_centroids
+            self.centroids = new_centroids
         print("Final centroids:", new_centroids)
         logging.info("Final centroids: %s", new_centroids)
 
 if __name__ == "__main__":
     num_mappers = int(sys.argv[1])
     num_reducers = int(sys.argv[2])
-    data_source = "/Users/manavsaini/Documents/DSCD/Assignment 3/A3/points3.txt"  # Could be a single file path or list of file paths
+    data_source = "/Users/manavsaini/Documents/DSCD/Assignment 3/A3/points.txt"  
     num_centroids = int(sys.argv[3])
     iterations = int(sys.argv[4])
-    scenario = 1  # 1 for single big file, 2 for multiple files
+    scenario = 1 
     master = MasterServicer(num_mappers, num_reducers, data_source, num_centroids, iterations, scenario)
     master.run()
